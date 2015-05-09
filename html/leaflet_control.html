@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Leaflet Control</title>
+    <link rel="stylesheet" href="../leaflet/css" />
+    <script type="text/javascript" src="../leaflet/js"></script>
+    <style>
+        #map { height: 400px; }
+    </style>
+    <script>
+        function readJSON(file) {
+            var request = new XMLHttpRequest();
+            request.open('GET', file, false);
+            request.send(null);
+            if (request.status == 200)
+                return request.responseText;
+        };
+
+        var json = JSON.parse(readJSON('/json'));
+        var json_len = json.length-1
+
+        function draw_layer (value) {
+            var FeatureLayer = []
+            for(var object = json_len; object >= 0; object-=1){
+                if(json[object]['FeatureBegin']<=value && json[object]['FeatureEnd']>=value || json[object]['FeatureBegin']<=value &&  json[object]['FeatureEnd'] == -999){
+                    if(json[object]['GeometryType'] == "MultiLineString"){
+                        polyline = L.multiPolyline(json[object]['FeaturePoints'])
+                        polyline.bindPopup(json[object]['FeatureName'])
+                        FeatureLayer.push(polyline)
+                    }
+                    if(json[object]['GeometryType'] == "LineString"){
+                        polyline = L.polyline(json[object]['FeaturePoints'])
+                        polyline.bindPopup(json[object]['FeatureName'])
+                        FeatureLayer.push(polyline)
+                    }
+                }
+            }
+        var EndLayer = new L.FeatureGroup(FeatureLayer)
+        return EndLayer
+        }
+    </script>
+</head>
+<body>
+    <div id = 'map'></div>
+    <div id = 'info'>
+        <b>
+            Правый верхний угол карты
+        </b>    
+    </div>
+    <script type="text/javascript">
+        var map = L.map('map').setView([51.505, -0.09], 3)
+        L.tileLayer('http://{s}.tile.cloudmade.com/1a1b06b230af4efdbb989ea99e9841af/997/256/{z}/{x}/{y}.png').addTo(map);
+        var overlayMaps = {
+            '0': draw_layer(0),
+            '200': draw_layer(200),
+            '400': draw_layer(400),
+            '600': draw_layer(600),
+            '750': draw_layer(750)
+        };
+        L.control.layers(overlayMaps).addTo(map);
+    </script>
+</body>
+</html>

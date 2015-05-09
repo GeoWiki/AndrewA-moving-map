@@ -24,26 +24,26 @@ def server_static():
 
 @route('/json/test2')
 def server_static():
-    return static_file('data2.json', root = './')
+    return static_file('data2.json', root='./')
 
 @route('/leaflet/js')
 def leaflet_js():
-    return static_file('leaflet.js', root = './html/')
+    return static_file('leaflet.js', root='./html/')
 
 @route('/leaflet/css')
 def leaflet_css():
-    return static_file('leaflet.css', root = './html/')
+    return static_file('leaflet.css', root='./html/')
 
 @route('/test2/')
 def static():
-    return static_file('data.json', root = './')
+    return static_file('data.json', root='./')
 
 @route('/json')
 def json():
-    return static_file('data.json', root = './')
+    return static_file('data.json', root='./')
 
 @route('/json/ne/<file:path>')
 def return_json(file):
-    return static_file(file, root = './ready_json/NE/')
+    return static_file(file, root='./ready_json/NE/')
 
 run(host='localhost', port=8811, debug=True)
